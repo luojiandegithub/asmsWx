@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>奥诗曼斯产品列表</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" type="text/css" href="css/app.css" />
+		<style>
+			.mui-plus .plus{
+				display: inline;
+			}
+			
+			.plus{
+				display: none;
+			}
+			
+			#topPopover {
+				position: fixed;
+				top: 16px;
+				right: 6px;
+			}
+			#topPopover .mui-popover-arrow {
+				left: auto;
+				right: 6px;
+			}
+			p {
+				text-indent: 22px;
+			}
+			span.mui-icon {
+				font-size: 14px;
+				color: #007aff;
+				margin-left: -15px;
+				padding-right: 10px;
+			}
+			.mui-popover {
+				height: 300px;
+			}
+			/*.mui-content {
+				padding: 10px;
+			}*/
+			.active-kind{
+				background-color: greenyellow;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<a href="#topPopover" class="mui-pull-right" style="margin-top:1px;"><img style="width: 33px;margin-top:5px;" src="img/kind.png"/></a>
+			<h1 class="mui-title">产品列表</h1>
+			
+		</header>
+		<div id="topPopover" class="mui-popover" style="width:30%;height:19%;">
+			<div class="mui-popover-arrow"></div>
+			<div class="mui-scroll-wrapper">
+				<div class="mui-scroll">
+					<ul id="kindList" class="mui-table-view">
+						<li class="mui-table-view-cell active-kind" style="text-align: center;">
+							<a href="#">全部</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="mui-input-row mui-search" style="position:fixed;z-index:10;width:100%;margin-top:2.9rem;">
+					<input id="search" type="search" class="mui-input-clear mui-indexed-list-search-input" style="background-color: rgb(249, 242, 242);" placeholder="搜索">
+			</div>
+		<div id="pullrefresh" class="mui-content mui-scroll-wrapper" style="bottom: '20px';margin-top: 0.2rem;">
+		<div id="proList" class="mui-scroll" page="1" total="0">
+			<!--<div class="mui-card">
+				<div class="mui-card-header mui-card-media" style="height:40vw;background-image:url(img/1457355519.jpg)"></div>
+				<div class="mui-card-content">
+					<div class="mui-card-content-inner">
+						<p>Uploaded in October 25, 2018</p>
+						<p style="color: #333;">这款产品是奥诗曼斯联合意大利顶尖设计团队Rekkless设计而出，奢华尊贵，不失内涵。</p>
+					</div>
+				</div>
+				<div class="mui-card-footer">
+					<a class="mui-card-link">Like</a>
+					<a class="mui-card-link">Read more</a>
+				</div>
+			</div>-->
+			
+		</div>
+		
+		
+		<script type="text/javascript" src="js/jquery-3.2.1.min.js" ></script>
+		<script type="text/javascript" src="js/config.js" ></script>
+		<script type="text/javascript" src="js/app.js" ></script>
+		<script src="js/mui.min.js"></script>
+		<script>
+			$(function(){
+				//对浏览器的UserAgent进行正则匹配，不含有微信独有标识的则为其他浏览器  
+			    var useragent = navigator.userAgent;  
+			    if (useragent.match(/MicroMessenger/i) != 'MicroMessenger') {  
+			      //  window.location.href="wxError.html";
+			    }  
+			    //加载数据
+			    getKindList();
+			    $("#kindList li").bind("tap",function(e){
+			    	console.log("click me");
+			    	var kindId=$(e.target).parent().attr("id");
+			    	$(".active-kind").removeClass("active-kind");
+			    	$(e.target).parent().addClass("active-kind");
+			    	$(".mui-card").remove();
+			    	var page=$("#proList").attr("page",1);
+			    	getProductList();
+			    });
+			    getProductList();
+				$("#pullrefresh .mui-pull-top-pocket").css("top","60px");
+			});
+			mui.init({
+				pullRefresh: {
+					container: '#pullrefresh',
+					down: {
+						style:'circle',
+						callback: pulldownRefresh
+					},
+					up: {
+						auto:false,
+						contentrefresh: '正在加载...',
+						callback: pullupRefresh
+					}
+				}
+			});
+			mui('.mui-scroll-wrapper').scroll();
+			function pullupRefresh() {
+				console.log("调用了我一次");
+				var total=$("#proList").attr("total");
+				total=parseInt(total);
+				var page=$("#proList").attr("page");
+				page=parseInt(page);
+				if(page<total){
+					page=page+1;
+					$("#proList").attr("page",page);
+					 getProductList();
+				} 
+				mui('#pullrefresh').pullRefresh().endPullupToRefresh();
+				  sessionStorage.setItem("offsetTop", $(window).scrollTop());
+			}
+
+			/**
+			 * 下拉刷新具体业务实现
+			 */
+			function pulldownRefresh() {
+				$(".mui-card").remove();
+				var page=$("#proList").attr("page",1);
+				getProductList();
+				mui('#pullrefresh').pullRefresh().endPulldownToRefresh();
+				  sessionStorage.setItem("offsetTop", $(window).scrollTop());
+			}
+		</script>
+	</body>
+
+</html>
