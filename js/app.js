@@ -27,11 +27,19 @@ function getProductList(){
 	var page=$("#proList").attr("page");
 	page=parseInt(page);
 	var kindId=$(".active-kind").attr("id");
+	var params={};
+	params.kindId=kindId;
+	params.page=page;
+	params.pageSize=15;
+	var key=$("#search").val();
+	if(key!="" && key!=null){
+		params.key=key;
+	}
 	$.ajax({
 		type:"get",
 		url:config.path+"/api.do?getProductList",
 		async:false,
-		data:{page:page,pageSize:3,kindId:kindId},
+		data:params,
 		success:function(data){
 			//console.log(data);
 			data=JSON.parse(data);
@@ -42,7 +50,20 @@ function getProductList(){
 				$("#proList").attr("total",total);
 				for(var i=0;i<rows.length;i++){
 					var str="";
-					str+="<div  class='mui-card'>";
+					var productDesc=rows[i].productDesc;
+					if(productDesc==null || productDesc.length<1){
+						productDesc="上传于" + rows[i].createDate ;
+					}
+					str+="<li class='mui-table-view-cell mui-media' >";
+					str+="<a class='mui-navigate-right toDetail' proId='"+ rows[i].id +"' >";
+					str+="<img class='mui-media-object mui-pull-left' src='"+config.path+"/"+rows[i].imagesUrl+"'>";
+					str+="<div class='mui-media-body'>";
+					str+=rows[i].productNamem;
+					str+="<p class='mui-ellipsis'>"+productDesc+"</p>";
+					str+="</div>";
+					str+="</a>";
+					str+="</li>";
+					/* str+="<div  class='mui-card'>";
 					str+="<div class='mui-card-header mui-card-media' style='height:40vw;background-image:url("+config.path+"/"+rows[i].imagesUrl+")'></div>";
 					str+="<div class='mui-card-content'>";
 					str+="<div class='mui-card-content-inner'>";
@@ -55,11 +76,16 @@ function getProductList(){
 					str+="<a  class='mui-card-link'><img src='img/like.png' style='width:20%'></a>";
 					str+="<a proId='"+ rows[i].id +"' class='toDetail'><img proId='"+ rows[i].id +"' src='img/toDetail.png' style='width:20%;float:right'></a>";
 					str+="</div>";
-					str+="</div>";
+					str+="</div>"; */
 					$("#proList").append(str);
 				}
 				$(".toDetail").bind("tap",function(e){
 					var thisProId=$(e.target).attr("proid");
+					var obj=$(e.target);
+					while(thisProId==undefined){//遍历 避免用户点击到A标签里面的元素导致获取不到PROID
+						obj=obj.parent();
+						thisProId=obj.attr("proid");
+					}
 					console.log(thisProId);
 					window.location.href="detail.html?id="+thisProId;
 					/*mui.openWindow({
