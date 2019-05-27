@@ -54,6 +54,17 @@ function getProductList(){
 					if(productDesc==null || productDesc.length<1){
 						productDesc="上传于" + rows[i].createDate ;
 					}
+					str+="<li class='mui-table-view-cell mui-media mui-col-xs-6'>";
+					str+="<a class='toDetail' proId='"+ rows[i].id +"'>";
+					str+="<img class='mui-media-object' style='height:121.3px;' src='"+config.path+"/"+rows[i].imagesUrl+"'>";
+					var productName=rows[i].productNamem;
+					if(productName==null || productName.length<1){
+						productName="暂无描述";
+					}
+					str+="<div class='mui-media-body'>"+productName+"</div>";
+					str+="</a>";
+					str+="</li>";
+					/*---
 					str+="<li class='mui-table-view-cell mui-media' >";
 					str+="<a class='mui-navigate-right toDetail' proId='"+ rows[i].id +"' >";
 					str+="<img class='mui-media-object mui-pull-left' src='"+config.path+"/"+rows[i].imagesUrl+"'>";
@@ -62,7 +73,7 @@ function getProductList(){
 					str+="<p class='mui-ellipsis'>"+productDesc+"</p>";
 					str+="</div>";
 					str+="</a>";
-					str+="</li>";
+					str+="</li>";*/
 					/* str+="<div  class='mui-card'>";
 					str+="<div class='mui-card-header mui-card-media' style='height:40vw;background-image:url("+config.path+"/"+rows[i].imagesUrl+")'></div>";
 					str+="<div class='mui-card-content'>";
